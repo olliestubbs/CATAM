@@ -1,0 +1,194 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\title{Matrices over Finite Fields}
+\author{Ollie Stubbs}
+\date{December 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Question 1}
+A program to find the inverses of the units of a prime number using the suggested technique is listed [fill this in later]. Results for some test inputs are given in table 1:
+\begin{table}[h!]
+\centering
+\label{table:1}
+\caption{Inverse program results}
+\begin{tabular}{ |c|c|c| } 
+ \hline
+ input & output array & time(s) \\ 
+ \hline
+ 3 & [1,2] & 0.0 \\ 
+ 
+ 8 & 'Could not find inverses' &0.001\\
+ 
+ 11 & [ 1  6  4  3  9  2  8  7  5 10] & 0.0 \\ 
+ 
+ 6113&Too large for table & 2.06\\
+ \hline
+ 
+\end{tabular}
+\end{table}
+
+A very simple way to speed up this procedure would be to recognise that if $a$ is the inverse of $b$, $b$ is also the inverse of $a$, so for the majority of units (those that are neither 1 nor -1 mod p) finding an inverse in fact gives you two, and saving both results at once would increase the speed by roughly a factor of two.
+\section{Question 2}
+For each unit $a$ of p, the algorithm used above compares it to $a^{-1}$ numbers (since it compares it to every number up to and including $a^-1$. So the total number of elementary operations is roughly:
+\[\sum_{a=1}^{p-1}a^{-1}\]
+Plus some negligible terms. However, we note there is a bijection between units and their inverses, so by reordering we can write this sum as:
+\[\sum_{a=1}^{p-1}a=\frac{p(p-1)}{2}\]
+Which has complexity $p^2$, since $\frac{\frac{1}{2}p(p-1)}{p^2}$=$\frac{1}{2}-\frac{1}{2p}$ which is between $\frac{1}{2}$ and 1. One way to greatly reduce the complexity would be to compute the all the powers of each element at once.
+\section{Question 3}
+The program to convert the matrices into row-echelon form is [put place here]. Running the program with the given inputs gave:
+\medskip
+
+\begin{minipage}[b]{0.3\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&0&1&1&2\\
+0&1&1&2&1\\
+0&0&1&2&0\\
+0&0&0&0&0\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A1 mod 3}
+\end{minipage}
+\begin{minipage}[b]{0.35\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&0&22&26&11\\
+0&1&7&2&10\\
+0&0&1&1&26\\
+0&0&0&1&1\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A1 mod 29}
+\end{minipage}
+\begin{minipage}[b]{0.35\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&18&21&10&4&16\\
+0&1&4&0&15&10\\
+0&0&1&9&14&7\\
+0&0&0&0&0&0\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A2 mod 23}
+\end{minipage}
+
+\medskip
+Since all of the operations used in Gaussian elimination leave the row space unchanged, we can conclude that the row space of each of the matrices is the row space of that matrix's row echelon form. Indeed I claim that the non-zero rows of the row echelon form are a basis for that row space. Firstly they span the row space, since the row space is defined as the span of the row vectors, and every other row vector is zero. They are also independent: suppose $v_1,v_2...v_n$ are the non-zero row vectors of a matrix in row echelon form, and suppose that
+\begin{equation}
+    \alpha_1v_1+\alpha_2v_2+...+\alpha_nv_n=0
+\end{equation}
+Assume for some $m$ that $\alpha_k=0$ for all $k<m$, also since our matrix is in row echelon form there is an $i$ such that $[v_m]_i=1$, and $[v_l]_i=0$ for all $l>m$. Then
+\begin{equation}
+    [\alpha_1v_1+\alpha_2v_2+...+\alpha_mv_m+....+\alpha_nv_n]_i=[\alpha_mv_m]_i=\alpha_m=0
+\end{equation}
+So by induction $\alpha_m=0$ for all m. So the row vectors are independent, and therefore form a basis of the row space. 
+
+So A1 mod 3 has rank 3, A1 mod 29 has rank 4, and A2 mod 23 has rank 3. They have bases: 
+\medskip
+
+\begin{minipage}{0.27\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    0\\
+    1\\
+    1\\
+    2\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    1\\
+    2\\
+    1\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    2\\
+    0\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    0\\
+    22\\
+    26\\
+    11\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    7\\
+    2\\
+    10\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    1\\
+    26\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    0\\
+    1\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    18\\
+    21\\
+    10\\
+    4\\
+    6\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    4\\
+    0\\
+    15\\
+    10\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    9\\
+    14\\
+    7\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\end{document}

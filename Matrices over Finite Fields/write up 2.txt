@@ -1,0 +1,368 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\title{Matrices over Finite Fields}
+\author{Ollie Stubbs}
+\date{December 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Question 1}
+A program to find the inverses of the units of a prime number using the suggested technique is listed [fill this in later]. Results for some test inputs are given in table 1:
+\begin{table}[h!]
+\centering
+\label{table:1}
+\caption{Inverse program results}
+\begin{tabular}{ |c|c|c| } 
+ \hline
+ input & output array & time(s) \\ 
+ \hline
+ 3 & [1,2] & 0.0 \\ 
+ 
+ 8 & 'Could not find inverses' &0.001\\
+ 
+ 11 & [ 1  6  4  3  9  2  8  7  5 10] & 0.0 \\ 
+ 
+ 6113&Too large for table & 2.06\\
+ \hline
+ 
+\end{tabular}
+\end{table}
+
+A very simple way to speed up this procedure would be to recognise that if $a$ is the inverse of $b$, $b$ is also the inverse of $a$, so for the majority of units (those that are neither 1 nor -1 mod p) finding an inverse in fact gives you two, and saving both results at once would increase the speed by roughly a factor of two.
+\section{Question 2}
+For each unit $a$ of p, the algorithm used above compares it to $a^{-1}$ numbers (since it compares it to every number up to and including $a^-1$. So the total number of elementary operations is roughly:
+\[\sum_{a=1}^{p-1}a^{-1}\]
+Plus some negligible terms. However, we note there is a bijection between units and their inverses, so by reordering we can write this sum as:
+\[\sum_{a=1}^{p-1}a=\frac{p(p-1)}{2}\]
+Which has complexity $p^2$, since $\frac{\frac{1}{2}p(p-1)}{p^2}$=$\frac{1}{2}-\frac{1}{2p}$ which is between $\frac{1}{2}$ and 1. One way to greatly reduce the complexity would be to compute the all the powers of each element at once.
+\section{Question 3}
+The program to convert the matrices into row-echelon form is [put place here]. Running the program with the given inputs gave:
+\medskip
+
+\begin{minipage}[b]{0.3\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&0&1&1&2\\
+0&1&1&2&1\\
+0&0&1&2&0\\
+0&0&0&0&0\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A1 mod 3}
+\end{minipage}
+\begin{minipage}[b]{0.35\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&0&22&26&11\\
+0&1&7&2&10\\
+0&0&1&1&26\\
+0&0&0&1&1\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A1 mod 29}
+\end{minipage}
+\begin{minipage}[b]{0.35\textwidth}
+\begin{equation*}
+\begin{bmatrix}
+1&18&21&10&4&16\\
+0&1&4&0&15&10\\
+0&0&1&9&14&7\\
+0&0&0&0&0&0\\
+\end{bmatrix}
+\end{equation*}
+\centering
+\textit{RE form of A2 mod 23}
+\end{minipage}
+
+\medskip
+Since all of the operations used in Gaussian elimination leave the row space unchanged, we can conclude that the row space of each of the matrices is the row space of that matrix's row echelon form. Indeed I claim that the non-zero rows of the row echelon form are a basis for that row space. Firstly they span the row space, since the row space is defined as the span of the row vectors, and every other row vector is zero. They are also independent: suppose $v_1,v_2...v_n$ are the non-zero row vectors of a matrix in row echelon form, and suppose that
+\begin{equation}
+    \alpha_1v_1+\alpha_2v_2+...+\alpha_nv_n=0
+\end{equation}
+Assume for some $m$ that $\alpha_k=0$ for all $k<m$, also since our matrix is in row echelon form there is an $i$ such that $[v_m]_i=1$, and $[v_l]_i=0$ for all $l>m$. Then
+\begin{equation}
+    [\alpha_1v_1+\alpha_2v_2+...+\alpha_mv_m+...+\alpha_nv_n]_i=[\alpha_mv_m]_i=\alpha_m=0
+\end{equation}
+So by induction $\alpha_m=0$ for all m. So the row vectors are independent, and therefore form a basis of the row space. 
+
+So A1 mod 3 has rank 3, A1 mod 29 has rank 4, and A2 mod 23 has rank 3. They have bases: 
+\medskip
+
+\begin{minipage}{0.27\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    0\\
+    1\\
+    1\\
+    2\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    1\\
+    2\\
+    1\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    2\\
+    0\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    0\\
+    22\\
+    26\\
+    11\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    7\\
+    2\\
+    10\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    1\\
+    26\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    0\\
+    1\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    18\\
+    21\\
+    10\\
+    4\\
+    6\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    1\\
+    4\\
+    0\\
+    15\\
+    10\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    9\\
+    14\\
+    7\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+\end{minipage}
+\section{Question 4}
+Let $A$ be an mxn matrix consisting of rows $\mathbf{a_i}$, $1\leq i\leq m$, and let $\mathbf{x}$ be a length n column vector. Then $A\mathbf{x}=0 \iff \mathbf{a_i}.\mathbf{x}=0$ $\forall 1\leq i\leq m$.In this formulation we can see that any of the three elementary operations used in Gaussian elimination preserve the property $\mathbf{a_i}.\mathbf{x}=0$ and therefore preserve the kernel of A. So to find the kernel of A we just need to find the kernel of its row echelon form. 
+\medskip
+
+We recall that for a matrix in row echelon form with rank r, if $1 \leq i \leq r$ the ith column is zeroes up to the l(i)th element, which is one, and then the rest can be anything. If $i>r$ then $\mathbf{a_i} = 0$.
+
+So $\mathbf{a_i}.\mathbf{x}=0$ $\forall 1\leq i\leq m \iff \mathbf{a_i}.\mathbf{x}=0$ $\forall 1\leq i\leq r$.
+\medskip
+
+So if $\mathbf{x}=\sum_1^nx_i\mathbf{e_i}$ then $\mathbf{a_i}.\mathbf{x}=0\iff x_{l(i)}+a_{i(l(i)+1)}x_{l(i)+1}+...+a_{in}x_n=0$ which gives us a unique determination of $x_{l(i)}$ if we know the later terms. So let $1 \leq y_k \leq n$ s.t $\forall i$, $y_k \neq l(i)$, i.e. $\{y_k\}$ are the numbers that are not l(i) for any i. Then $x_{l(i)}$ can be uniquely determined by $\{x_{y_k}\}$, since if $A$ has rank r, $x_{l(r)}$ is uniquely determined by $x_{l(r)+1},...x_{n}$, which are all in $\{x_{y_k}\}$, and then $x_{l(r-1)}$ is determined by $x_{l(r-1)+1},...,x_{l(r)},...x_n$ and so on.
+\medskip
+
+So we have that if we know the value of the components of a vector that are not l(i) for any i, i.e. the $\{x_{y_k}\}$, then we know the values of $x_{l(i)}$. So obvious choice of basis is, for each $1 \leq k \leq n-r$, to let $x_{y_k}$ be 1 and the rest 0 (if $n=r$ then kernel is just the zero vector), then let the $x_{l(i)}$ be uniquely determined such that $A\mathbf{x}=0$. 
+\medskip
+
+This is what my program did. Firstly it found the values of l(i), and then the values of $y_k$ by looking at the numbers that weren't l(i) for any i. Then for each k it found a basis vector by setting $x_{y_k}=1$ and finding $x_{l(r)} = -\sum_{j=l(r)+1}^na_{ij}x_j$, then $x_{l(r-1)} = -\sum_{j=l(r-1)+1}^na_{ij}x_j$ and so on. Independence is clear from the $y_k$th component being 1 for one vector and 0 for the others. They also span the set, since we can use vectors from this basis to match the $y_k$ components of any vector, and we showed this uniquely determines any vector in the kernel.
+
+Here are the results from the program:
+\medskip
+
+B1 mod 2 has a kernel of dimension two, B1 mod 11 has kernel of dimension 1, B1 mod 17 has kernel of dimension 1, and B2 mod 23 has kernel of dimension 1, and the bases of their kernels are respectively: $\begin{Bmatrix}
+    \begin{pmatrix}
+    0\\
+    0\\
+    1\\
+    1\\
+    1\\
+    0\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    1\\
+    1\\
+    1\\
+    1\\
+    0\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix}$,\hspace{10pt}  
+$\begin{Bmatrix}
+    \begin{pmatrix}
+    9\\
+    8\\
+    7\\
+    1\\
+    0\\
+    0\\
+    \end{pmatrix}
+    \end{Bmatrix} $,\hspace{10pt}   
+$\begin{Bmatrix}
+    \begin{pmatrix}
+    7\\
+    0\\
+    5\\
+    14\\
+    1\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix} $,\hspace{10pt}   
+ $\begin{Bmatrix}
+    \begin{pmatrix}
+    6\\
+    6\\
+    9\\
+    9\\
+    9\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix} $
+    
+\section{Question 5}
+dim(U)+dim(U$^0$)=n
+\section{Question 6}
+If U is the rowspace of a matrix A with rows $\mathbf{a_i}$ then:
+$\mathbf{x}$ is in the kernel of A $\iff$ $\mathbf{a_i}.\mathbf{x}=0$ $ \forall \mathbf{a_i} \iff x \in$U$^0$
+
+Therefore to find U$^0$ I used my program from question 4 to find the kernel of A1 mod 19, which was $\begin{Bmatrix} 
+    \begin{pmatrix}
+    6\\
+    13\\
+    16\\
+    18\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix} $ 
+    
+So this is the basis of U$^0$. We the observe that this is the rowspace of $\begin{pmatrix}
+6&13&16&18&1\\
+\end{pmatrix}$
+and hence U$^{0^0}$ is the kernel of this matrix. So I then ran the kernel finding program from question 4 on this matrix, and the program outputted the basis \begin{equation*}
+    \begin{Bmatrix}
+    \begin{pmatrix}
+    1\\
+    1\\
+    0\\
+    0\\
+    0\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    10\\
+    0\\
+    1\\
+    0\\
+    0\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    16\\
+    0\\
+    0\\
+    1\\
+    0\\
+    \end{pmatrix},
+    \begin{pmatrix}
+    3\\
+    0\\
+    0\\
+    0\\
+    1\\
+    \end{pmatrix}
+    \end{Bmatrix}
+\end{equation*}
+
+We want to show this is the same space as U, that is we want to show that the matrices: \[
+\begin{bmatrix}
+0&1&7&2&10\\
+8&0&2&5&1\\
+2&1&2&5&5\\
+7&4&5&3&0\\
+\end{bmatrix}
+\begin{bmatrix}
+1&1&0&0&0\\
+10&0&1&0&0\\
+16&0&0&1&0\\
+3&0&0&0&1\\
+\end{bmatrix}
+\]
+
+Have the same rowspace mod 19. It would be enough to show that they have the same row echelon form, since those operations preserve row space. Using the gaussian elimination program yields:
+
+\[
+\begin{bmatrix}
+1&0&5&3&12\\
+0&1&7&2&10\\
+0&0&1&4&7\\
+0&0&0&1&1\\
+\end{bmatrix}
+\begin{bmatrix}
+1&1&0&0&0\\
+0&1&17&0&0\\
+0&0&1&16&0\\
+0&0&0&1&1\\
+\end{bmatrix}
+\]
+
+These are clearly not the same, however row echelon form is not unique, for example we can add lower rows to upper rows and the matrix remains in row echelon form. Next we can put it in reduced echelon form, where each l(i) column (each column that is the initial one for some row) is all zeroes apart from that one. My program to turn a matrix from row echelon form to reduced row echelon form is [list place here]. Note that doing this only uses the row-space preserving operations used in Gaussian elimination, so if our two matrices have the same reduced form U$^{0^0}$ = U. Here are the results of the reduced form algorithm with the above matrices as input:
+
+\[
+\begin{bmatrix}
+1&0&0&0&13\\
+0&1&0&0&6\\
+0&0&1&0&3\\
+0&0&0&1&1\\
+\end{bmatrix}
+\begin{bmatrix}
+1&0&0&0&13\\
+0&1&0&0&6\\
+0&0&1&0&3\\
+0&0&0&1&1\\
+\end{bmatrix}
+\]
+Which are clearly the same, so U$^{0^0}$ = U.
+
+\section{Question 7}
+As we have seen before to compute bases of U and W we can find 
+\end{document}
